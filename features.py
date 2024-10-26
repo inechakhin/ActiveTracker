@@ -19,7 +19,7 @@ def build_features_dataframe(
     f_df = pd.DataFrame(columns=columns)
     for vkid in vkid_list:
         values = []
-        user = api.users.get(
+        users = api.users.get(
             user_ids=vkid,
             fields=[
                 "counters",
@@ -39,17 +39,18 @@ def build_features_dataframe(
                 "universities",
             ],
         )
-        if user:
+        if users:
+            user = users[0]
             for column in columns:
                 parts = column.split(".")
                 if len(parts) == 1:
-                    if parts[0] in user[0]:
-                        values.append(user[0][parts[0]])
+                    if parts[0] in user:
+                        values.append(user[parts[0]])
                     else:
                         values.append(None)
                 if len(parts) == 2:
-                    if parts[0] in user[0] and parts[1] in user[0][parts[0]]:
-                        values.append(user[0][parts[0]][parts[1]])
+                    if parts[0] in user and parts[1] in user[parts[0]]:
+                        values.append(user[parts[0]][parts[1]])
                     else:
                         values.append(None)
             f_df = pd.concat(
@@ -79,7 +80,7 @@ def main():
     ]
 
     features_df = build_features_dataframe(api, vkid_list, columns)
-    print(features_df)
+    features_df.to_csv("dataset/features.csv", index=False)
 
 
 if __name__ == "__main__":
