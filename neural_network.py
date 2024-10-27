@@ -32,15 +32,15 @@ history = model.fit(
     X_train,
     y_train,
     epochs=100,
-    batch_size=20,
+    batch_size=5,
     validation_data=(X_test, y_test),
     callbacks=[early_stopping],
 )
 
 model_json = model.to_json()
-with open("model.json", "w") as json_file:
+with open("info/model.json", "w") as json_file:
     json_file.write(model_json)
-model.save_weights("model.h5")
+model.save_weights("info/model.h5")
 
 
 

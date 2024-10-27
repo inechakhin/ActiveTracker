@@ -66,10 +66,10 @@ def build_traits_dataframe(
 
 
 def main():
-    assessment = json.load(open("ipip50.json", "r"))
+    assessment = json.load(open("info/ipip50.json", "r"))
     types_max_min = max_min_for_types(assessment)
    
-    con_info = json.load(open("connect_info.json", "r"))
+    con_info = json.load(open("info/connect.json", "r"))
     api = vk.API(access_token=con_info["access_token"], v=con_info["v"])
 
     df = pd.read_csv("dataset/BIG5.csv")

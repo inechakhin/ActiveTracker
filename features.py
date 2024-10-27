@@ -73,10 +73,10 @@ def main():
     vk_list = df["Ссылка на вашу страницу ВКонтакте"].to_list()
     vkid_list = get_vkid_from_vk_list(vk_list)
 
-    con_info = json.load(open("connect_info.json", "r"))
+    con_info = json.load(open("info/connect.json", "r"))
     api = vk.API(access_token=con_info["access_token"], v=con_info["v"])
 
-    columns = json.load(open("features.json", "r"))
+    columns = json.load(open("info/features.json", "r"))
 
     features_df = build_features_dataframe(api, vkid_list, columns)
     features_df = fill_gaps(features_df)
