@@ -25,6 +25,14 @@ def get_id_by_vkid(api: vk.API, vkid: str) -> str:
         return None
 
 
+def get_fullname_and_photo_by_vkid(api: vk.API, vkid: str) -> str:
+    users = api.users.get(user_ids=vkid, fields=["photo_200"])
+    if users:
+        return users[0]["first_name"], users[0]["last_name"], users[0]["photo_200"] 
+    else:
+        return None, None, None
+
+
 def get_fields_from_features(features: list) -> list:
     fields = set()
     for feature in features:
