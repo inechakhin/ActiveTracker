@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import json
 import vk
+import pandas as pd
 from keras.models import model_from_json
 from utils import convert_vk_url_to_vkid, get_fullname_and_photo_by_vkid
 from prediction_big5 import predict_big5
@@ -18,7 +19,8 @@ def predict():
     if not fn:
         return jsonify({"error" : "User not found!"})
     
-    prediction = predict_big5(vk_url, api, features, model)
+    global features_df
+    prediction, features_df = predict_big5(vk_url, api, features_df, model)
     big5 = {
         "O": round(prediction[0][0].item(), 3),
         "C": round(prediction[0][1].item(), 3), 
@@ -34,7 +36,7 @@ if __name__ == "__main__":
     con_info = json.load(open("info/connect.json", "r"))
     api = vk.API(access_token=con_info["access_token"], v=con_info["v"])
 
-    features = json.load(open("info/features.json", "r"))
+    features_df = pd.read_csv("dataset/new_features.csv")
 
     json_file = open("info/model.json", "r")
     model_info = json_file.read()
@@ -43,3 +45,5 @@ if __name__ == "__main__":
     model.load_weights("info/model.h5")
 
     app.run(port=8000, debug=True)
+    features_df.to_csv("dataset/new_features.csv", index=False)
+    
