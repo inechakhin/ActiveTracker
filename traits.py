@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 import vk
-from utils import convert_vk_url_to_vkid
+from utils import convert_vk_url_to_vkid, get_id_by_vkid
 
 
 def max_min_for_types(assessment: list) -> list:
@@ -49,10 +49,7 @@ def build_traits_dataframe(
         for col in df.columns:
             if col == "Ссылка на вашу страницу ВКонтакте":
                 vkid = convert_vk_url_to_vkid(df.at[i, col])
-                if vkid:
-                    users = api.users.get(user_ids=vkid)
-                    if users:
-                        id = users[0]["id"]
+                id = get_id_by_vkid(api, vkid)
                 continue
             task = find_question(assessment, col)
             if task["math"] == "+":
@@ -78,6 +75,7 @@ def main():
     df = pd.read_csv("dataset/BIG5.csv")
     df.drop("Отметка времени", axis=1, inplace=True)
     traits_df = build_traits_dataframe(df, api, assessment, types_max_min)
+    #print(traits_df)
     traits_df.to_csv("dataset/traits.csv", index=False)
 
 
